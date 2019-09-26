@@ -11,6 +11,8 @@ contract DRMToken is ERC721BasicToken, Ownable{
         string name;
         string artist;
         string description;
+        address[] artists;
+        uint[] contributions;
         string realart;// link of image 
         string thumbnail;// url image
         uint64 timestamp;
@@ -92,6 +94,7 @@ contract DRMToken is ERC721BasicToken, Ownable{
         require(msg.value >= tokenPrices[_tokenId]);
         require(isCreated[_tokenId]);
         // require(TokenMint(msg.sender,_tokenId));
+        _artistWallet.transfer(value.div(2));
         _mint(msg.sender, _tokenId); //Mints the token ID of the newest placeholder structure to that wallet address.
         tokenCount++; //adds one to total token count
     }
