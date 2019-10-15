@@ -15,13 +15,16 @@ contract DRMToken is ERC721BasicToken, Ownable{
         uint64 timestamp;
     }
     uint _artworkId = 0;
+    uint256[] onStoreTokens;
     Artwork[] public artworks; 
     mapping(uint256 => bool) internal isCreated;
     mapping(address => bool) public registeredArtists;
     mapping(uint256 => uint256) public tokenPrices;
     // mapping(string => uint256[]) public IPFStoID; // filter out a list of ID with same image 
     uint public tokenCount=0;
-
+    function getOnStoreTokens()external view returns(uint256[]){
+        return onStoreTokens;
+    }
     function artistRegister(address _artist)external onlyOwner{ 
         registeredArtists[_artist] = true;
     }
@@ -67,6 +70,7 @@ contract DRMToken is ERC721BasicToken, Ownable{
             uint256 id = artworks.push(_artwork) - 1;
             tokenPrices[id] = _price;
             isCreated[id] = true;
+            onStoreTokens.push(id);
             tokenCount++; //adds one to total token count
         }
     }
@@ -92,6 +96,16 @@ contract DRMToken is ERC721BasicToken, Ownable{
         require(isCreated[_tokenId]);
         // require(TokenMint(msg.sender,_tokenId));
         // _artistWallet.transfer(value.div(2));
+        uint index=0;
+        for(index=0;i<onStoreTokens.length;index++){
+            if(onStoreTokens[index] == _tokenId){
+                for (uint i = index; i<onStoreTokens.length-1; i++){
+                    onStoreTokens[i] = onStoreTokens[i+1];
+                }
+                delete onStoreTokens[onStoreTokens.length-1];
+                onStoreTokens.length--;
+            }
+        }
         _mint(msg.sender, _tokenId); //Mints the token ID of the newest placeholder structure to that wallet address.
     }
     function totalToken()public returns(uint){
