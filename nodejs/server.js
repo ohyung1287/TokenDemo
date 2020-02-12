@@ -5,6 +5,7 @@ const Web3 = require("web3");
 const abi = require("./abi");
 const fetch = require("node-fetch");
 const Tx = require("ethereumjs-tx");
+const BigNumber = require("bignumber.js");
 const bodyParser = require("body-parser");
 app.use(cors());
 app.use(bodyParser.json());
@@ -12,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //envSetup
 let web3;
-let DRM_address = "0x25b099439d0282fa4daec224aef9ffe6fc3b9b61";
+let DRM_address = "0x019d07b1227910088bd823402775779900e1adbb";
 let DRM_owner = "0x5efDD3CAb3c3Ea3D1725B8EaF340Cc8d5a9B7547";
 let DRM_ownerKey =
   "45F93E7A6CF774228519708AA97529A9CE2A663E26E67F183FE49BB9C90D468D";
@@ -54,9 +55,9 @@ app.get("/getOnStoreTokens/", async (req, res) => {
 app.post("/artistRegister/", async (req, res) => {
   try {
     var address = req.body.address;
+    console.log(`registering artist ${address}`);
 
     var transfer = await DRM.methods.artistRegister(address).encodeABI();
-    console.log(`registering artist ${address}`);
     await sendTxn(transfer);
     res.sendStatus(200);
   } catch (err) {
@@ -64,27 +65,36 @@ app.post("/artistRegister/", async (req, res) => {
     res.send(err);
   }
 });
-app.post("/publicCreation/", async (req, res) => {
+// @param (string[]contributes,int[]percentages,string[]constraints,int priceWei,string name,string artist,string desc,string realart, string thumbnail)
+app.post("/tokenGenerate/", async (req, res) => {
   try {
-    var address = req.body.address;
+    var contributes = req.body.contributes; // address array -- [addr1, addr2]
+    contributes = contributes.split(",");
+    var percentages = req.body.percentages; // % array 1-10 -- [5,5]
+    percentages = percentages.split(",");
+    var constraints = req.body.constraints; // nullable string array -- ["School","Governmant","Bank"]
     var price = req.body.price;
-    var name = req.body.name;
+    price = new BigNumber(price * 1000000000000000000);
+    var num = req.body.num;
+    var name = req.body.title;
     var artist = req.body.artist;
     var description = req.body.description;
     var realart = req.body.realart;
-    var thumnail = req.body.thumnail;
+    var thumbnail = req.body.thumbnail; // URL only
+    /**
+     *  upload File to server, generate an URL
+     **/
     var deployNum = req.body.deployNum;
-    console.log(req.body);
+    var metadata = [name, artist, "description", realart, thumbnail];
+    console.log(metadata);
     var transfer = await DRM.methods
-      .publicCreation(
-        address,
-        price,
-        name,
-        artist,
-        description,
-        realart,
-        thumnail,
-        deployNum
+      .tokenGenerate(
+        contributes,
+        percentages,
+        constraints,
+        price.toString(),
+        metadata,
+        num //deployNum
       )
       .encodeABI();
     await sendTxn(transfer);
