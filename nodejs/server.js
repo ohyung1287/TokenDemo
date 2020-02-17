@@ -3,7 +3,6 @@ const app = express();
 const cors = require("cors");
 const Web3 = require("web3");
 const abi = require("./abi");
-const fetch = require("node-fetch");
 const Tx = require("ethereumjs-tx");
 const bodyParser = require("body-parser");
 app.use(cors());
