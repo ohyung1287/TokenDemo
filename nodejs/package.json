@@ -13,6 +13,7 @@
     "aws-sdk": "^2.463.0",
     "axios": "^0.16.2",
     "bcrypt": "^3.0.6",
+    "bignumber.js": "^9.0.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "ethereum-input-data-decoder": "0.0.12",
