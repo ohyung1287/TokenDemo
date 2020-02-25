@@ -39,6 +39,10 @@ module.exports = [
     constant: false,
     inputs: [
       {
+        name: "_name",
+        type: "string"
+      },
+      {
         name: "_artist",
         type: "address"
       }
@@ -393,6 +397,25 @@ module.exports = [
         type: "uint256"
       }
     ],
+    name: "artists",
+    outputs: [
+      {
+        name: "",
+        type: "string"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [
+      {
+        name: "",
+        type: "uint256"
+      }
+    ],
     name: "artworks",
     outputs: [
       {
@@ -498,6 +521,24 @@ module.exports = [
   {
     constant: true,
     inputs: [],
+    name: "getArtist",
+    outputs: [
+      {
+        name: "names",
+        type: "string[]"
+      },
+      {
+        name: "addresses",
+        type: "address[]"
+      }
+    ],
+    payable: false,
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    constant: true,
+    inputs: [],
     name: "getOnStoreTokens",
     outputs: [
       {
@@ -536,20 +577,6 @@ module.exports = [
       }
     ],
     name: "isApprovedForAll",
-    outputs: [
-      {
-        name: "",
-        type: "bool"
-      }
-    ],
-    payable: false,
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: "isRegisteredArtist",
     outputs: [
       {
         name: "",
@@ -649,14 +676,14 @@ module.exports = [
     inputs: [
       {
         name: "",
-        type: "address"
+        type: "uint256"
       }
     ],
     name: "registeredArtists",
     outputs: [
       {
         name: "",
-        type: "bool"
+        type: "address"
       }
     ],
     payable: false,

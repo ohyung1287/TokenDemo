@@ -3,6 +3,7 @@ const app = express();
 const cors = require("cors");
 const Web3 = require("web3");
 const abi = require("./abi");
+const fetch = require("node-fetch");
 const Tx = require("ethereumjs-tx");
 const BigNumber = require("bignumber.js");
 const bodyParser = require("body-parser");
@@ -12,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 //envSetup
 let web3;
-let DRM_address = "0x019d07b1227910088bd823402775779900e1adbb";
+let DRM_address = "0x160db70990723b3dbdfc43828a61f68d48f2b650";
 let DRM_owner = "0x5efDD3CAb3c3Ea3D1725B8EaF340Cc8d5a9B7547";
 let DRM_ownerKey =
   "45F93E7A6CF774228519708AA97529A9CE2A663E26E67F183FE49BB9C90D468D";
@@ -59,6 +60,21 @@ app.post("/artistRegister/", async (req, res) => {
     var transfer = await DRM.methods.artistRegister(address).encodeABI();
     await sendTxn(transfer);
     res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.send(err);
+  }
+});
+
+app.get("/registeredArtists/", async (req, res) => {
+  try {
+    var list = await DRM.methods.getArtist().call();
+    var arr = [];
+    for (var i = 0; i < list.names.length; i++) {
+      arr.push(list.names[i] + "-" + list.addresses[i]);
+    }
+    // console.log(arr);
+    res.send(arr);
   } catch (err) {
     console.log(err);
     res.send(err);
